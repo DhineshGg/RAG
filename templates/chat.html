@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vespera · Assistant</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+
+  <!-- ══════════════ LEFT SIDEBAR ══════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <button class="new-chat-btn" onclick="newChat()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        New Chat
+      </button>
+      <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Collapse">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="history-section" id="chatHistory">
+      <div class="history-section-label">Conversations</div>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════ CENTER COLUMN ══════════════ -->
+  <div class="chat-column">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn-icon" id="mobileMenuBtn" onclick="toggleSidebar()" style="display:none" title="Menu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="brand">
+          <div class="brand-icon">✦</div>
+          <span class="brand-name">Vespera</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="live-badge">
+          <div class="live-dot"></div>
+          Online
+        </div>
+        <button class="btn-icon" title="Settings" onclick="alert('Settings coming soon')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+        <button class="btn-logout" onclick="window.location='/logout'">Sign out</button>
+      </div>
+    </header>
+
+    <!-- CHAT BOX -->
+    <div class="chat-box" id="chatBox">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="empty-glyph">
+          <div class="empty-ring-outer"></div>
+          <div class="empty-ring-inner"></div>
+          <div class="empty-core">✦</div>
+        </div>
+        <div class="empty-title">Vespera</div>
+        <div class="empty-tagline">Discover what data hides.</div>
+      </div>
+    </div>
+
+    <!-- STREAM STATUS -->
+    <div class="stream-status" id="streamStatus">
+      <div class="status-spinner" id="statusSpinner"></div>
+      <span id="statusText"></span>
+    </div>
+
+    <!-- INPUT AREA — Upload | Textarea | Send -->
+    <div class="input-area">
+      <div class="input-wrap">
+        <div class="input-box" id="inputBox">
+
+          <!-- Upload button -->
+          <div class="upload-input-btn" title="Upload document (PDF, TXT, CSV, XLSX)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <div class="upload-dot" id="uploadDot"></div>
+            <input id="fileInput" type="file" accept=".pdf,.txt,.csv,.xlsx" onchange="handleUpload(this)"/>
+          </div>
+
+          <!-- Text input -->
+          <textarea
+            id="messageInput"
+            class="chat-input"
+            placeholder="Ask Vespera anything… (Enter to send, Shift+Enter for newline)"
+            rows="1"
+            onkeydown="handleKey(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+
+          <!-- Send -->
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="19" x2="12" y2="5"/>
+              <polyline points="5 12 12 5 19 12"/>
+            </svg>
+          </button>
+
+        </div>
+        <div class="input-meta">Vespera · Document Intelligence · Answers grounded in your data</div>
+      </div>
+    </div>
+
+  </div><!-- end chat-column -->
+
+  <!-- ══════════════ VESPERA STARLINK PANEL ══════════════ -->
+  <aside class="right-panel">
+
+    <div class="starlink-header">
+      <div class="starlink-dot"></div>
+      <span class="starlink-title">Vespera Starlink</span>
+      <span class="starlink-badge">Live</span>
+    </div>
+
+    <div class="starlink-canvas-wrap">
+      <canvas id="starlinkCanvas"></canvas>
+    </div>
+
+    <div class="starlink-feed">
+      <div class="feed-label">Signal Feed</div>
+      <div class="feed-messages" id="feedMessages"></div>
+    </div>
+
+  </aside>
+
+</div><!-- end app-shell -->
+
+<script src="/static/chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vespera · Document Intelligence</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <style>
+    /* Landing-specific overrides */
+    .nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15,18,32,.88);
+      backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .nav::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent);
+      opacity: 0.35;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; animation: pulseGlow 3.5s ease-in-out infinite;
+    }
+    .nav-title {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.03em;
+      background: linear-gradient(120deg, var(--text) 20%, var(--accent-soft) 65%, var(--accent-2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; align-items: center; gap: 10px; }
+
+    .btn-ghost {
+      padding: 8px 16px; background: transparent;
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      color: var(--text-sec); font-size: 13.5px; font-family: var(--font); font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center;
+      transition: all var(--t-fast);
+    }
+    .btn-ghost:hover {
+      background: var(--surface); border-color: var(--border-glow);
+      color: var(--accent-soft); text-decoration: none;
+    }
+    .btn-cta {
+      padding: 9px 20px;
+      background: linear-gradient(135deg, var(--accent), #6358e8);
+      border: none; border-radius: var(--r-sm);
+      color: #fff; font-size: 13.5px; font-family: var(--font); font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all var(--t-fast);
+      box-shadow: 0 3px 14px rgba(124,108,255,.38);
+    }
+    .btn-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 22px rgba(124,108,255,.55);
+      text-decoration: none; color: #fff;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative; z-index: 1;
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 70px 24px 50px;
+      gap: 22px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 14px; border-radius: var(--r-pill);
+      border: 1px solid rgba(124,108,255,.28);
+      background: rgba(124,108,255,.07);
+      font-size: 11.5px; font-weight: 600;
+      color: var(--accent-soft); letter-spacing: .06em;
+      text-transform: uppercase;
+      animation: fadeUp .5s var(--ease) both;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(40px, 7.5vw, 76px);
+      font-weight: 800; letter-spacing: -0.05em; line-height: 1.04;
+      max-width: 840px;
+      animation: fadeUp .55s .08s var(--ease) both;
+      background: linear-gradient(135deg, var(--text) 10%, var(--accent-soft) 55%, var(--accent-2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--text-sec); max-width: 500px; line-height: 1.7;
+      animation: fadeUp .55s .16s var(--ease) both;
+    }
+
+    .hero-actions {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp .55s .24s var(--ease) both;
+    }
+
+    .btn-hero {
+      padding: 13px 28px;
+      background: linear-gradient(135deg, var(--accent), #6358e8);
+      border: none; border-radius: var(--r-lg);
+      color: #fff; font-size: 16px; font-family: var(--font); font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all var(--t-fast);
+      box-shadow: 0 4px 22px rgba(124,108,255,.38);
+    }
+    .btn-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(124,108,255,.55);
+      text-decoration: none; color: #fff;
+    }
+    .btn-hero-outline {
+      padding: 13px 28px;
+      background: transparent;
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      color: var(--text); font-size: 16px; font-family: var(--font); font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all var(--t-fast);
+    }
+    .btn-hero-outline:hover {
+      background: var(--accent-dim); border-color: var(--border-glow);
+      color: var(--accent-soft); text-decoration: none;
+    }
+
+    /* Canvas preview */
+    .hero-canvas-wrap {
+      width: min(680px, 90vw);
+      border-radius: 18px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-deep);
+      height: 210px;
+      box-shadow: var(--shadow-lg), var(--shadow-accent);
+      animation: fadeUp .6s .32s var(--ease) both;
+      position: relative;
+    }
+    .hero-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+    .canvas-fade {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 55%, rgba(15,18,32,.95) 100%);
+      pointer-events: none;
+    }
+
+    /* Features */
+    .features {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; max-width: 900px; width: 90%;
+      margin: 0 auto 70px;
+      animation: fadeUp .6s .44s var(--ease) both;
+    }
+    .feat-card {
+      padding: 22px 22px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      transition: border-color var(--t-mid), transform var(--t-mid);
+    }
+    .feat-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
+    .feat-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 13px;
+    }
+    .feat-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .feat-desc { font-size: 13px; color: var(--text-sec); line-height: 1.65; }
+
+    /* Footer */
+    .footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 18px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted);
+      background: rgba(15,18,32,.6);
+    }
+    .footer a { color: var(--accent-soft); }
+
+    @media (max-width: 768px) {
+      .nav { padding: 14px 20px; }
+      .features { grid-template-columns: 1fr; max-width: 440px; }
+      .hero { padding: 50px 20px 38px; }
+    }
+    @media (max-width: 480px) {
+      .nav-links .btn-ghost { display: none; }
+    }
+  </style>
+</head>
+
+<body class="landing-body">
+
+  <nav class="nav">
+    <a class="nav-brand" href="/">
+      <div class="nav-icon">✦</div>
+      <span class="nav-title">Vespera</span>
+    </a>
+    <div class="nav-links">
+      <a class="btn-ghost" href="/login">Sign in</a>
+      <a class="btn-cta" href="/signup">
+        Get started
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero">
+
+    <div class="hero-eyebrow">
+      <div class="eyebrow-dot"></div>
+      Document Intelligence · Now Live
+    </div>
+
+    <h1 class="hero-title">Discover what<br/>data hides.</h1>
+
+    <p class="hero-sub">
+      Vespera combines neural retrieval with language intelligence to surface hidden insights from your documents — grounded in your own data.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn-hero" href="/signup">
+        Start for free
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+      <a class="btn-hero-outline" href="/login">Sign in</a>
+    </div>
+
+    <div class="hero-canvas-wrap">
+      <canvas id="heroCanvas"></canvas>
+      <div class="canvas-fade"></div>
+    </div>
+
+  </section>
+
+  <section class="features">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(124,108,255,.12);">🔭</div>
+      <div class="feat-title">Deep Retrieval</div>
+      <div class="feat-desc">Dense bi-encoder embeddings fused with BM25 sparse search. Surface semantically hidden passages.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(54,214,201,.1);">⚡</div>
+      <div class="feat-title">Neural Reranking</div>
+      <div class="feat-desc">Cross-encoder reranking ensures only the most relevant chunks reach the model — precision over noise.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(167,139,250,.1);">📄</div>
+      <div class="feat-title">Multi-format Ingestion</div>
+      <div class="feat-desc">PDF, TXT, CSV, XLSX — automatically chunked, embedded, and indexed in your private knowledge base.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(124,108,255,.12);">✦</div>
+      <div class="feat-title">Grounded Answers</div>
+      <div class="feat-desc">Vespera answers strictly from your documents. No hallucinations — just what your data contains.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(54,214,201,.1);">🔐</div>
+      <div class="feat-title">Private Workspaces</div>
+      <div class="feat-desc">Each user's knowledge base is isolated. Documents and conversations stay entirely private.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(167,139,250,.1);">🌐</div>
+      <div class="feat-title">Starlink Visualization</div>
+      <div class="feat-desc">Watch your knowledge network come alive with Vespera Starlink — a real-time neural constellation.</div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    &copy; 2025 Vespera &nbsp;·&nbsp;
+    <a href="/login">Sign in</a> &nbsp;·&nbsp;
+    <a href="/signup">Create account</a>
+  </footer>
+
+  <script>
+    // Hero constellation canvas
+    (function() {
+      const canvas = document.getElementById('heroCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H;
+
+      function resize() {
+        const r = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width  = r.width;
+        H = canvas.height = r.height;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const COLORS = ['#7c6cff','#36d6c9','#a78bfa','#6358e8','#5ecfdc'];
+      const N = 38;
+      const nodes = Array.from({length: N}, (_, i) => ({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random()-.5)*.42, vy: (Math.random()-.5)*.42,
+        r: 1.6 + Math.random() * 2.6,
+        color: COLORS[i % COLORS.length],
+        phase: Math.random() * Math.PI * 2,
+        speed: .014 + Math.random() * .012,
+      }));
+
+      const edgeTimers = {};
+      const edgeKey = (i, j) => i < j ? `${i}_${j}` : `${j}_${i}`;
+
+      function hex2rgba(hex, a) {
+        const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+        return `rgba(${r},${g},${b},${a.toFixed(3)})`;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        nodes.forEach(n => {
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < 0 || n.x > W) n.vx *= -1;
+          if (n.y < 0 || n.y > H) n.vy *= -1;
+          n.phase += n.speed;
+        });
+
+        for (let i = 0; i < N; i++) for (let j = i+1; j < N; j++) {
+          const d = Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y);
+          if (d > 100) continue;
+          const k = edgeKey(i, j);
+          if (!(k in edgeTimers)) { if (Math.random() < .0015) edgeTimers[k] = Math.random()*Math.PI; }
+          else { edgeTimers[k] += .016; if (edgeTimers[k] > Math.PI*2.5) delete edgeTimers[k]; }
+
+          let a = (1 - d/100) * 0.18;
+          if (k in edgeTimers) a += Math.sin(edgeTimers[k]) * 0.32;
+          a = Math.max(0, Math.min(.5, a));
+          if (a < .01) continue;
+
+          const g = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+          g.addColorStop(0, hex2rgba(nodes[i].color, a));
+          g.addColorStop(1, hex2rgba(nodes[j].color, a));
+          ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = g; ctx.lineWidth = .7; ctx.stroke();
+
+          if (k in edgeTimers) {
+            const p = (Math.sin(edgeTimers[k]*1.5)+1)/2;
+            const px = nodes[i].x + (nodes[j].x-nodes[i].x)*p;
+            const py = nodes[i].y + (nodes[j].y-nodes[i].y)*p;
+            ctx.beginPath(); ctx.arc(px, py, 1.5, 0, Math.PI*2);
+            ctx.fillStyle = hex2rgba('#ffffff', a*1.6); ctx.fill();
+          }
+        }
+
+        nodes.forEach(n => {
+          const pulse = .5+.5*Math.sin(n.phase);
+          const grd = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*3.5);
+          grd.addColorStop(0, hex2rgba(n.color, .25*pulse)); grd.addColorStop(1,'transparent');
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r*3.5,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r*(.8+.25*pulse),0,Math.PI*2);
+          ctx.fillStyle=hex2rgba(n.color,.75+.25*pulse); ctx.fill();
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r*.35,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,255,255,.7)'; ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+  </script>
+
+</body>
+</html>

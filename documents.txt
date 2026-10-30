@@ -1,0 +1,8 @@
+RAG stands for Retrieval-Augmented Generation.
+It combines vector search with large language models.
+
+Adaptive routing selects different models depending on query complexity.
+
+Gemini models are useful for large context reasoning.
+Groq provides fast inference for open models.
+
